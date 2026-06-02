@@ -4,7 +4,7 @@ import customtkinter as ctk
 from PIL import Image
 
 # Nota que ahora heredamos de ctk.CTkFrame, no de ctk.CTk
-class ActividadIntroduccion(ctk.CTkFrame):
+class ActividadIntroduccion(ctk.CTkScrollableFrame):
     def __init__(self, parent, controlador):
         # Inicializamos el Frame pegándolo al contenedor principal
         super().__init__(parent, fg_color="#EDBB99")
@@ -148,25 +148,63 @@ class ActividadIntroduccion(ctk.CTkFrame):
 
         self.ajustar_botones()
 
+    
     def disparar_animacion_diez(self):
         self.en_animacion = True
         self.ajustar_botones()
         self.lbl_digito_izq.configure(text="1", text_color="#E74C3C")
         self.lbl_digito_der.configure(text="0", text_color="#E74C3C")
-        self.cerca_izq.place(x=35, y=10)
-        self.after(1000, self.animacion_diez_paso_2)
+        
+        # Paso 1: Aparece la gallina 10 en tamaño normal para completar el grupo
+        self.limpiar_pantalla()
+        for i in range(10):
+            fila, columna = i // 5, i % 5
+            lbl = ctk.CTkLabel(self.granja, image=self.img_gallina_normal, text="" if self.img_gallina_normal else "🐔")
+            if not self.img_gallina_normal: lbl.configure(font=("Arial", 30))
+            lbl.grid(row=fila, column=columna, padx=20, pady=25)
+            self.gallinas_en_pantalla.append(lbl)
+            
+        self.after(300, self.animacion_diez_paso_1_5)
+
+    def animacion_diez_paso_1_5(self):
+        # Paso 2: Se encogen en su mismo lugar
+        self.limpiar_pantalla()
+        for i in range(10):
+            fila, columna = i // 5, i % 5
+            lbl = ctk.CTkLabel(self.granja, image=self.img_gallina_peque, text="" if self.img_gallina_peque else "🐔")
+            if not self.img_gallina_peque: lbl.configure(font=("Arial", 15))
+            lbl.grid(row=fila, column=columna, padx=20, pady=25)
+            self.gallinas_en_pantalla.append(lbl)
+            
+        self.after(300, self.animacion_diez_paso_2)
 
     def animacion_diez_paso_2(self):
+        # Paso 3: Se acomodan en grupo del lado izquierdo (AÚN SIN CERCA)
+        self.limpiar_pantalla()
+        for i in range(10):
+            fila, columna = i // 4, i % 4
+            lbl = ctk.CTkLabel(self.lado_izquierdo, image=self.img_gallina_peque, text="" if self.img_gallina_peque else "🐔")
+            if not self.img_gallina_peque: lbl.configure(font=("Arial", 15))
+            lbl.grid(row=fila, column=columna, padx=12, pady=15)
+            self.gallinas_en_pantalla.append(lbl)
+            
+        self.after(300, self.animacion_diez_paso_2_5)
+
+    def animacion_diez_paso_2_5(self):
+        # Paso 4: ¡Magia! Aparece la cerca alrededor de ellas
         self.limpiar_pantalla()
         self.cerca_izq.place(x=35, y=10)
         for i in range(10):
             fila, columna = i // 4, i % 4
             lbl = ctk.CTkLabel(self.interior_cerca_izq, image=self.img_gallina_peque, text="" if self.img_gallina_peque else "🐔")
+            if not self.img_gallina_peque: lbl.configure(font=("Arial", 15))
             lbl.grid(row=fila, column=columna, padx=8, pady=12)
             self.gallinas_en_pantalla.append(lbl)
-        self.after(1000, self.animacion_diez_paso_3)
+            
+        self.after(300, self.animacion_diez_paso_3)
 
     def animacion_diez_paso_3(self):
+        # Paso 5: Los números cambian de color indicando que ya está lista la decena
         self.lbl_digito_izq.configure(text="1", text_color="#1F6AA5")
         self.lbl_digito_der.configure(text="0", text_color="#2ECC71")
         self.en_animacion = False
@@ -177,27 +215,55 @@ class ActividadIntroduccion(ctk.CTkFrame):
         self.ajustar_botones()
         self.lbl_digito_izq.configure(text="2", text_color="#E74C3C")
         self.lbl_digito_der.configure(text="0", text_color="#E74C3C")
-        self.cerca_izq.place(x=35, y=10)
-        self.cerca_der.place(x=35, y=10)
-        self.after(1000, self.animacion_veinte_paso_2)
-
-    def animacion_veinte_paso_2(self):
+        
+        # Paso 1: Aparece la gallina 20 (la décima del lado derecho) formando el grupo, SIN cerca derecha.
         self.limpiar_pantalla()
-        self.cerca_izq.place(x=35, y=10)
-        self.cerca_der.place(x=35, y=10)
+        self.cerca_izq.place(x=35, y=10) # La cerca izquierda ya existe y se queda ahí
+        
+        # Redibujamos las 10 gallinas de la cerca izquierda
         for i in range(10):
             fila, columna = i // 4, i % 4
             lbl = ctk.CTkLabel(self.interior_cerca_izq, image=self.img_gallina_peque, text="" if self.img_gallina_peque else "🐔")
+            if not self.img_gallina_peque: lbl.configure(font=("Arial", 15))
             lbl.grid(row=fila, column=columna, padx=8, pady=12)
             self.gallinas_en_pantalla.append(lbl)
+            
+        # Dibujamos las 10 gallinas chiquitas sueltas en el lado derecho
+        for i in range(10):
+            fila, columna = i // 4, i % 4
+            lbl = ctk.CTkLabel(self.lado_derecho, image=self.img_gallina_peque, text="" if self.img_gallina_peque else "🐔")
+            if not self.img_gallina_peque: lbl.configure(font=("Arial", 15))
+            lbl.grid(row=fila, column=columna, padx=12, pady=15)
+            self.gallinas_en_pantalla.append(lbl)
+            
+        self.after(300, self.animacion_veinte_paso_2)
+
+    def animacion_veinte_paso_2(self):
+        # Paso 2: ¡Magia! Les cae la cerca del lado derecho a las nuevas gallinas
+        self.limpiar_pantalla()
+        self.cerca_izq.place(x=35, y=10)
+        self.cerca_der.place(x=35, y=10) # ¡Ahora sí aparece la cerca derecha!
+        
+        # Las 10 de la izquierda en su cerca
+        for i in range(10):
+            fila, columna = i // 4, i % 4
+            lbl = ctk.CTkLabel(self.interior_cerca_izq, image=self.img_gallina_peque, text="" if self.img_gallina_peque else "🐔")
+            if not self.img_gallina_peque: lbl.configure(font=("Arial", 15))
+            lbl.grid(row=fila, column=columna, padx=8, pady=12)
+            self.gallinas_en_pantalla.append(lbl)
+            
+        # Las 10 de la derecha ya adentro de su cerca
         for i in range(10):
             fila, columna = i // 4, i % 4
             lbl = ctk.CTkLabel(self.interior_cerca_der, image=self.img_gallina_peque, text="" if self.img_gallina_peque else "🐔")
+            if not self.img_gallina_peque: lbl.configure(font=("Arial", 15))
             lbl.grid(row=fila, column=columna, padx=8, pady=12)
             self.gallinas_en_pantalla.append(lbl)
-        self.after(1000, self.animacion_veinte_paso_3)
+            
+        self.after(300, self.animacion_veinte_paso_3)
 
     def animacion_veinte_paso_3(self):
+        # Paso 3: Cambio de color en los números indicando que terminamos la segunda decena
         self.lbl_digito_izq.configure(text="2", text_color="#1F6AA5")
         self.lbl_digito_der.configure(text="0", text_color="#2ECC71")
         self.en_animacion = False
