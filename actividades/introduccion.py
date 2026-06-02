@@ -33,7 +33,7 @@ class ActividadIntroduccion(ctk.CTkScrollableFrame):
         
         # Botón Volver al Menú (Arriba a la izquierda)
         self.btn_volver = ctk.CTkButton(
-            self, text="⬅ Volver al Menú", font=("Arial", 14, "bold"),
+            self, text="⬅ Volver", font=("Arial", 14, "bold"),
             fg_color="#E74C3C", hover_color="#C0392B",
             command=lambda: self.controlador.mostrar_pagina("Menu")
         )

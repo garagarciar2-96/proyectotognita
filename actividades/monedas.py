@@ -29,7 +29,7 @@ class ActividadMonedas(ctk.CTkScrollableFrame):
         # --- INTERFAZ GRÁFICA ---
         # Botón Volver
         self.btn_volver = ctk.CTkButton(
-            self, text="⬅ Volver al Menú", font=("Arial", 14, "bold"),
+            self, text="⬅ Volver", font=("Arial", 14, "bold"),
             fg_color="#E74C3C", hover_color="#C0392B",
             command=lambda: self.controlador.mostrar_pagina("Menu")
         )
@@ -192,7 +192,7 @@ class ActividadMonedas(ctk.CTkScrollableFrame):
                 break
                 
         if todo_correcto:
-            self.lbl_resultado.configure(text="¡Excelente, mijo! 🌟", text_color="#27AE60")
+            self.lbl_resultado.configure(text="¡Excelente! 🌟", text_color="#27AE60")
             self.btn_revisar.configure(state="disabled")
             self.after(2000, self.generar_nuevo_reto)
         else:
